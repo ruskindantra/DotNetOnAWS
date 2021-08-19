@@ -35,6 +35,7 @@ namespace GettingStartedCdk.WelcomeMessageAPICdk.AWS
             pipelineRole.AddManagedPolicy(ManagedPolicy.FromAwsManagedPolicyName("PowerUserAccess"));
             bucket.GrantWrite(pipelineRole);
 
+            const string dotnetCommand = "dotnet";
             PipelineProject buildProject = new PipelineProject(this, "BuildProject", new PipelineProjectProps
             {
                 ProjectName = constants.StackPrefix + "-Build",
@@ -50,12 +51,12 @@ namespace GettingStartedCdk.WelcomeMessageAPICdk.AWS
                     {
                         ["install"] = new Dictionary<string, object>
                         {
-                            ["commands"] = "dotnet tool install -g Amazon.Lambda.Tools"
+                            ["commands"] = dotnetCommand + " tool install -g Amazon.Lambda.Tools"
                         },
                         ["build"] = new Dictionary<string, string>
                         {
-                            ["commands"] = "dotnet tool install -g Amazon.Lambda.Tools",
-                            ["commands"] = "dotnet lambda package-ci --template ./src/WelcomeMessage.API/serverless.template --output-template packaged-template.yaml --s3-bucket " + bucket.BucketName + " --s3-prefix " + constants.S3BuildOutputPath
+                            ["commands"] = dotnetCommand + " tool install -g Amazon.Lambda.Tools",
+                            ["commands"] = dotnetCommand + " lambda package-ci --template ./src/WelcomeMessage.API/serverless.template --output-template packaged-template.yaml --s3-bucket " + bucket.BucketName + " --s3-prefix " + constants.S3BuildOutputPath
                         }
                     },
                     ["artifacts"] = new Dictionary<string, string>

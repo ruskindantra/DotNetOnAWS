@@ -1,3 +1,4 @@
+using System;
 using Amazon.CDK;
 using Amazon.CDK.AWS.CodeBuild;
 using Amazon.CDK.AWS.CodePipeline;
@@ -21,17 +22,9 @@ namespace GettingStartedCdk.LocalWeatherAPICdk.AWS
         {
             LocalWeatherAPIConstants constants = StackConstantsHelper.GetECSConstants();
 
-            #region Create CodeCommit and ECR repositories
-
-            IRepository codeRepository = Repository.FromRepositoryName(this, constants.CodeCommitRepoName + "-repo", constants.CodeCommitRepoName);
-
-            Amazon.CDK.AWS.ECR.Repository containerRegistry = new Amazon.CDK.AWS.ECR.Repository(this, constants.ECRRegistryName + "-registry", new Amazon.CDK.AWS.ECR.RepositoryProps
-            {
-                RepositoryName = constants.ECRRegistryName,
-                RemovalPolicy = RemovalPolicy.DESTROY
-            });
-
-            #endregion
+            var codeRepoCreateCodeCommitAndEcsRepository = CreateCodeCommitAndEcsRepository(constants);
+            var codeRepository = codeRepoCreateCodeCommitAndEcsRepository.repo;
+            var containerRegistry = codeRepoCreateCodeCommitAndEcsRepository.ecsRepo;
 
             #region Create ECS Fargate Cluster, Service and Tasks
 
@@ -215,6 +208,20 @@ namespace GettingStartedCdk.LocalWeatherAPICdk.AWS
 
             #endregion
 
+        }
+
+        private (IRepository repo, Amazon.CDK.AWS.ECR.Repository ecsRepo)  CreateCodeCommitAndEcsRepository(LocalWeatherAPIConstants constants)
+        {
+            IRepository codeRepository =
+                Repository.FromRepositoryName(this, constants.CodeCommitRepoName + "-repo", constants.CodeCommitRepoName);
+
+            var containerRegistry = new Amazon.CDK.AWS.ECR.Repository(this, constants.ECRRegistryName + "-registry",
+                new Amazon.CDK.AWS.ECR.RepositoryProps
+                {
+                    RepositoryName = constants.ECRRegistryName,
+                    RemovalPolicy = RemovalPolicy.DESTROY
+                });
+            return (codeRepository, containerRegistry);
         }
     }
 }

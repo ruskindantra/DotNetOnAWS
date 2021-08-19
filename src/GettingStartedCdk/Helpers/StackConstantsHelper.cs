@@ -2,10 +2,10 @@
 
 namespace GettingStartedCdk.Helpers
 {
-    public class StackConstantsHelper
+    public static class StackConstantsHelper
     {
-        private static string codeCommitRepoName = "DotNetOnAWS";
-        private static string codeCommitBranch = "master";
+        private static readonly string codeCommitRepoName = "DotNetOnAWS";
+        private static readonly string codeCommitBranch = "master";
 
         public static WelcomeMessageAPIConstants GetLambdaConstants()
         {

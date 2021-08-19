@@ -1,4 +1,5 @@
-﻿using Amazon.CDK;
+﻿using System;
+using Amazon.CDK;
 using Amazon.CDK.AWS.ECR;
 using Amazon.CDK.AWS.ECS;
 using Amazon.CDK.AWS.ECS.Patterns;
@@ -47,7 +48,7 @@ namespace GettingStartedCdk.LocalWeatherAPICdk.Azure
              ********************************************************************************************************************************/
             var apiUrlParam = new StringParameter(this, "/dotnetonaws/localweatherapi/url", new StringParameterProps
             {
-                StringValue = "http://" + fargateECS.LoadBalancer.LoadBalancerDnsName + "/",
+                StringValue = new UriBuilder {Scheme = "https", Host = fargateECS.LoadBalancer.LoadBalancerDnsName}.ToString(),
                 Description = "URL for the LocalWeather API. Used by the OldWebApp MVC project to be hosted on BeanStalk",
                 ParameterName = "/dotnetonaws/localweatherapi/url"
             });
